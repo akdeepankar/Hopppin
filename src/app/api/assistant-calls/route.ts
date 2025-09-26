@@ -20,8 +20,7 @@ export async function GET(req: NextRequest) {
     if (typeof vapi.calls.list !== 'function') {
       return NextResponse.json({ success: false, error: 'Vapi SDK does not support listing calls by assistantId.' }, { status: 500 });
     }
-    // @ts-ignore
-    const sdkList = await vapi.calls.list({ assistantId });
+  const sdkList = await vapi.calls.list({ assistantId });
     //console.log('Vapi SDK list response:', JSON.stringify(sdkList, null, 2));
     if (Array.isArray(sdkList)) {
       calls = sdkList;

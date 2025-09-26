@@ -2,6 +2,8 @@ import React from 'react';
 import { CallStats } from './CallStats';
 import { CallFeedbacks } from './CallFeedbacks';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ChartScatter, File } from 'lucide-react';
+import { Loader } from '@/components/ui/Loader';
 
 export function Section2({ assistantId }: { assistantId: string }) {
   const [calls, setCalls] = React.useState<any[]>([]);
@@ -138,6 +140,9 @@ export function Section2({ assistantId }: { assistantId: string }) {
       .finally(() => setLoading(false));
   }, [assistantId]);
 
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <Tabs defaultValue="stats" className="flex h-full w-full flex-col">
       <TabsList className="sticky top-0 z-10 mb-4 border-b border-neutral-800 bg-neutral-950">
@@ -145,12 +150,13 @@ export function Section2({ assistantId }: { assistantId: string }) {
           value="stats"
           className="text-white data-[state=active]:text-foreground"
         >
-          Stats
+          <ChartScatter /> Stats
         </TabsTrigger>
         <TabsTrigger
           value="feedbacks"
           className="text-white data-[state=active]:text-foreground"
         >
+          <File />
           Feedbacks
         </TabsTrigger>
       </TabsList>
@@ -173,11 +179,8 @@ export function Section2({ assistantId }: { assistantId: string }) {
           </div>
         </TabsContent>
         <TabsContent value="feedbacks">
-          {loading && (
-            <div className="text-sm text-neutral-400">Loading...</div>
-          )}
           {error && <div className="text-sm text-red-400">{error}</div>}
-          {!loading && !error && <CallFeedbacks calls={calls} />}
+          {!error && <CallFeedbacks calls={calls} />}
         </TabsContent>
       </div>
     </Tabs>

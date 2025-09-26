@@ -11,18 +11,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  InkeepEmbeddedChat,
+  type InkeepEmbeddedChatProps,
+} from '@inkeep/cxkit-react-oss';
+
+import { useEffect } from 'react';
+
+interface CreateAssistantModalProps {
+  open: boolean;
+  onClose: () => void;
+  spaceId: string | undefined;
+  onSuccess?: () => void;
+  assistantData?: any;
+  isUpdateMode?: boolean;
+}
 
 export default function CreateAssistantModal({
   open,
   onClose,
   spaceId,
   onSuccess,
-}: {
-  open: boolean;
-  onClose: () => void;
-  spaceId: string | undefined;
-  onSuccess?: () => void;
-}) {
+  assistantData,
+  isUpdateMode,
+}: CreateAssistantModalProps) {
   const [name, setName] = useState('');
   const [model, setModel] = useState('gpt-4o');
   const [voice, setVoice] = useState('21m00Tcm4TlvDq8ikWAM');
@@ -33,6 +45,30 @@ export default function CreateAssistantModal({
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
+  // Prefill state when assistantData changes (for update mode)
+  useEffect(() => {
+    if (isUpdateMode && assistantData) {
+      setName(assistantData.name || '');
+      setModel(assistantData.model?.model || 'gpt-4o');
+      setVoice(assistantData.voice?.voiceId || '21m00Tcm4TlvDq8ikWAM');
+      // Try to get system prompt from messages
+      const sysMsg = assistantData.model?.messages?.find(
+        (m: any) => m.role === 'system'
+      );
+      setContent(
+        sysMsg?.content ||
+          'You are a friendly support assistant. Keep responses under 30 words.'
+      );
+    } else if (!isUpdateMode) {
+      setName('');
+      setModel('gpt-4o');
+      setVoice('21m00Tcm4TlvDq8ikWAM');
+      setContent(
+        'You are a friendly support assistant. Keep responses under 30 words.'
+      );
+    }
+  }, [assistantData, isUpdateMode, open]);
+
   if (!open) return null;
 
   async function handleCreateAssistant(e: React.FormEvent) {
@@ -41,19 +77,27 @@ export default function CreateAssistantModal({
     setError('');
     setSuccess(false);
     try {
-      const res = await fetch('/api/create-assistant', {
+      let url = '/api/create-assistant';
+      const body: any = {
+        name,
+        model,
+        voice,
+        content,
+        spaceId,
+      };
+      if (isUpdateMode && assistantData?.id) {
+        url = '/api/update-assistant';
+        body.assistantId = assistantData.id;
+      }
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          model,
-          voice,
-          content,
-          spaceId,
-        }),
+        body: JSON.stringify(body),
       });
       if (!res.ok) {
-        let message = 'Failed to create assistant.';
+        let message = isUpdateMode
+          ? 'Failed to update assistant.'
+          : 'Failed to create assistant.';
         try {
           const data = await res.json();
           if (data?.error) message = data.error;
@@ -64,7 +108,12 @@ export default function CreateAssistantModal({
       if (onSuccess) onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err?.message || 'Failed to create assistant. Please try again.');
+      setError(
+        err?.message ||
+          (isUpdateMode
+            ? 'Failed to update assistant. Please try again.'
+            : 'Failed to create assistant. Please try again.')
+      );
     } finally {
       setLoading(false);
     }
@@ -76,117 +125,130 @@ export default function CreateAssistantModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md space-y-6 rounded-xl border border-neutral-800 bg-neutral-900 p-8 shadow-lg transition-all duration-300"
+        className="flex w-full max-w-5xl flex-row gap-8 rounded-xl border border-neutral-800 bg-neutral-900 p-8 shadow-lg transition-all duration-300"
+        style={{ height: '95vh' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-2xl font-bold tracking-tight text-white">
-          Create an Assistant
-        </h2>
-        <form onSubmit={handleCreateAssistant} className="space-y-6">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-neutral-300">
-              Assistant Name
-            </label>
-            <Input
-              className="border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-fuchsia-600 focus:outline-none"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Support Assistant"
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-neutral-300">
-              Model
-            </label>
-            <Select value={model} onValueChange={setModel}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a model" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="gpt-4o">OpenAI GPT-4o</SelectItem>
-                <SelectItem value="gpt-3.5-turbo">
-                  OpenAI GPT-3.5 Turbo
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-neutral-300">
-              Voice
-            </label>
-            <Select value={voice} onValueChange={setVoice}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a voice" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="21m00Tcm4TlvDq8ikWAM">
-                  11labs - Default
-                </SelectItem>
-                {/* Add more voices as needed */}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-neutral-300">
-              System Prompt (about the assistant)
-            </label>
-            <Textarea
-              className="min-h-[60px] border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-fuchsia-600 focus:outline-none"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-            />
-            <div className="mt-1 text-xs text-neutral-500">
-              Describe your assistant's behavior, personality, or rules.
+        {/* Left: Assistant Form */}
+        <div className="min-w-[320px] flex-1">
+          <h2 className="mb-4 text-2xl font-bold tracking-tight text-white">
+            {isUpdateMode ? 'Update Assistant' : 'Create an Assistant'}
+          </h2>
+          <form onSubmit={handleCreateAssistant} className="space-y-6">
+            <div className="flex flex-row gap-4">
+              <div className="flex-1">
+                <label className="mb-1 block text-sm font-medium text-neutral-300">
+                  Assistant Name
+                </label>
+                <Input
+                  className="border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-fuchsia-600 focus:outline-none"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Support Assistant"
+                  required
+                />
+              </div>
+              <div className="flex-1">
+                <label className="mb-1 block text-sm font-medium text-neutral-300">
+                  Model
+                </label>
+                <Select value={model} onValueChange={setModel}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a model" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="gpt-4o">OpenAI GPT-4o</SelectItem>
+                    <SelectItem value="gpt-3.5-turbo">
+                      OpenAI GPT-3.5 Turbo
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex-1">
+                <label className="mb-1 block text-sm font-medium text-neutral-300">
+                  Voice
+                </label>
+                <Select value={voice} onValueChange={setVoice}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a voice" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="21m00Tcm4TlvDq8ikWAM">
+                      11labs - Default
+                    </SelectItem>
+                    {/* Add more voices as needed */}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
-          {error && <div className="text-sm text-red-500">{error}</div>}
-          {success && (
-            <div className="text-sm text-green-500">Assistant created!</div>
-          )}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  className="h-4 w-4 animate-spin text-white"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  />
-                </svg>
-                Creating...
-              </span>
-            ) : (
-              'Create Assistant'
+            <div>
+              <label className="mb-1 block text-sm font-medium text-neutral-300">
+                System Prompt (about the assistant)
+              </label>
+              <Textarea
+                className="min-h-[200px] border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-fuchsia-600 focus:outline-none"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                required
+              />
+              <div className="mt-1 text-xs text-neutral-500">
+                Describe your assistant's behavior, personality, or rules.
+              </div>
+            </div>
+            {error && <div className="text-sm text-red-500">{error}</div>}
+            {success && (
+              <div className="text-sm text-green-500">Assistant created!</div>
             )}
-          </Button>
-        </form>
-        {/* Close button removed; modal closes on outside click */}
-        <div className="mt-6 text-xs text-neutral-500 transition-opacity duration-300">
-          <div className="mb-1">
-            This will use the{' '}
-            <a
-              href="https://docs.vapi.ai/quickstart/web"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-fuchsia-400 underline"
+            <Button
+              type="submit"
+              variant={'secondary'}
+              className="w-full"
+              disabled={loading}
             >
-              Vapi API
-            </a>{' '}
-            to create a voice assistant.
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg
+                    className="h-4 w-4 animate-spin text-white"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    />
+                  </svg>
+                  {isUpdateMode ? 'Updating...' : 'Creating...'}
+                </span>
+              ) : isUpdateMode ? (
+                'Update Assistant'
+              ) : (
+                'Create Assistant'
+              )}
+            </Button>
+          </form>
+        </div>
+        {/* Right: Inkeep Chat */}
+        <div className="flex h-[90vh] min-w-[320px] flex-1 flex-col border-l border-neutral-800 pl-8">
+          <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+            {(() => {
+              const embeddedChatProps: InkeepEmbeddedChatProps = {
+                aiChatSettings: {
+                  graphUrl: 'http://localhost:3003/api/chat',
+                  apiKey:
+                    'sk_GT34zW85KGFt.rmsVE21gE1WJrq7VRbPzsW3eHz00FNvb1qciCK_mqKE', // Your API key
+                },
+              };
+              return <InkeepEmbeddedChat {...embeddedChatProps} />;
+            })()}
           </div>
         </div>
       </div>

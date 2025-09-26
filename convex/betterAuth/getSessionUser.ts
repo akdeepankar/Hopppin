@@ -73,7 +73,7 @@ export const getSessionUser = async (
   console.time('auth.api.getSession');
   const session = (await auth.api.getSession({
     headers,
-  })) as Session | null;
+  }) as unknown) as Session | null;
   console.timeEnd('auth.api.getSession');
 
   if (!session) {
@@ -123,7 +123,7 @@ export const getSessionUserWriter = async (
   const headers = await getHeaders(ctx);
   const session = (await auth.api.getSession({
     headers,
-  })) as Session | null;
+  }) as unknown) as Session | null;
 
   if (!session) {
     return null;

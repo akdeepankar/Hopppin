@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import type { Id } from '../../../convex/_generated/dataModel';
 export default function CreateSpaceModal({
@@ -16,12 +16,29 @@ export default function CreateSpaceModal({
 }) {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const createSpace = useMutation(api.spaces.createSpace);
+  const existingSpace = useQuery(
+    api.spaces.getSpaceByName,
+    name.trim() ? { name: name.trim() } : 'skip'
+  );
+
+  // Regex: only letters, numbers, dashes
+  const validName = /^[a-zA-Z0-9-]+$/.test(name.trim());
 
   if (!open) return null;
 
   const handleCreate = async () => {
+    setError('');
     if (!name.trim()) return;
+    if (!validName) {
+      setError('Name can only contain letters, numbers, and dashes.');
+      return;
+    }
+    if (existingSpace) {
+      setError('Space name not available.');
+      return;
+    }
     setLoading(true);
     try {
       await createSpace({ name: name.trim(), userId });
@@ -31,7 +48,7 @@ export default function CreateSpaceModal({
       onSuccess();
     } catch (e) {
       setLoading(false);
-      // Optionally show error
+      setError('Failed to create space.');
     }
   };
 
@@ -46,6 +63,11 @@ export default function CreateSpaceModal({
           onChange={(e) => setName(e.target.value)}
           disabled={loading}
         />
+        <div className="text-xs text-neutral-400">
+          Name can only contain letters, numbers, and dashes. No spaces. Must be
+          unique.
+        </div>
+        {error && <div className="text-sm text-red-500">{error}</div>}
         <div className="mt-2 flex gap-2">
           <button
             className="flex-1 rounded bg-fuchsia-500 px-4 py-2 font-semibold text-white transition hover:bg-fuchsia-600"

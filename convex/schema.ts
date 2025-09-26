@@ -36,6 +36,19 @@ const schema = defineEntSchema(
     })
       .index('createdBy', ['createdBy']),
 
+        // --------------------
+    // Emails Table
+    // --------------------
+    emails: defineEnt({
+      userId: v.id('users'),
+      from: v.string(),
+      to: v.string(),
+      subject: v.string(),
+      html: v.string(),
+      sentAt: v.number(),
+    })
+      .index('userId', ['userId']),
+
     // --------------------
     // Polar Payment Tables
     // --------------------

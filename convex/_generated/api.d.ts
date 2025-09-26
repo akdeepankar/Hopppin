@@ -32,6 +32,7 @@ import type * as init from "../init.js";
 import type * as organization from "../organization.js";
 import type * as polar_getOrganizationSubscription from "../polar/getOrganizationSubscription.js";
 import type * as polar_product from "../polar/product.js";
+import type * as sendEmail from "../sendEmail.js";
 import type * as shared_types from "../shared/types.js";
 import type * as spaces from "../spaces.js";
 import type * as triggers from "../triggers.js";
@@ -77,6 +78,7 @@ declare const fullApi: ApiFromModules<{
   organization: typeof organization;
   "polar/getOrganizationSubscription": typeof polar_getOrganizationSubscription;
   "polar/product": typeof polar_product;
+  sendEmail: typeof sendEmail;
   "shared/types": typeof shared_types;
   spaces: typeof spaces;
   triggers: typeof triggers;

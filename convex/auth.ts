@@ -149,22 +149,6 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
             },
           },
         },
-        sendInvitationEmail: async (data) => {
-          // Send invitation email via Resend
-          await (ctx as any).scheduler.runAfter(
-            0,
-            api.emails.sendOrganizationInviteEmail,
-            {
-              acceptUrl: `${process.env.NEXT_PUBLIC_SITE_URL!}/w/${data.organization.slug}?invite=${data.id}`,
-              invitationId: data.id,
-              inviterEmail: data.inviter.user.email,
-              inviterName: data.inviter.user.name || 'Team Admin',
-              organizationName: data.organization.name,
-              role: data.role,
-              to: data.email,
-            }
-          );
-        },
       }),
       // polar({
       //   client: new Polar({

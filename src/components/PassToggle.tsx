@@ -55,15 +55,22 @@ export function PassToggle({ space }: { space: any }) {
     <div className="mb-2 flex w-full items-center justify-between gap-2 rounded bg-neutral-800 px-3 py-2">
       <div className="flex flex-col">
         <span className="text-xs font-medium text-neutral-300">
-          Passcode Protection
-        </span>
-        <span className="text-xs text-neutral-400">
           Enable passcode for this space
         </span>
         {enabled && passcode && (
-          <span className="mt-1 font-mono text-sm text-fuchsia-400">
-            Passcode: <span className="select-all">{passcode}</span>
-          </span>
+          <div className="mt-2 flex flex-col">
+            <span className="mb-1 text-xs text-neutral-400">Passcode:</span>
+            <div className="flex gap-1">
+              {passcode.split('').map((char: string, idx: number) => (
+                <span
+                  key={idx}
+                  className="flex h-10 w-10 items-center justify-center rounded-md bg-neutral-900 font-mono text-lg text-gray-400 select-all"
+                >
+                  {char}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
       </div>
       <Switch

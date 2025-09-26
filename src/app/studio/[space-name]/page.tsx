@@ -18,6 +18,7 @@ import React from 'react';
 import { PassToggle } from '@/components/PassToggle';
 import { FeedbackColumn } from './FeedbackColumn';
 import { MainContent } from './MainContent';
+import { Loader } from '@/components/ui/Loader';
 
 export default function SpaceDetailPage() {
   // All hooks must be called unconditionally and in the same order
@@ -55,7 +56,7 @@ export default function SpaceDetailPage() {
   if (isPending) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-950 text-white">
-        <p>Loading...</p>
+        <Loader />
       </div>
     );
   }
@@ -156,13 +157,6 @@ export default function SpaceDetailPage() {
           {/* Add more sidebar items here if needed */}
         </div>
         <button
-          className="mb-2 rounded bg-fuchsia-600 px-4 py-2 font-medium text-white transition hover:bg-fuchsia-700 disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={() => setModalOpen(true)}
-          disabled={!!space?.assistantId}
-        >
-          + Create Assistant
-        </button>
-        <button
           className="mt-4 rounded bg-red-700 px-4 py-2 font-medium text-white transition hover:bg-red-800"
           onClick={() => setDeleteDialogOpen(true)}
         >
@@ -177,6 +171,7 @@ export default function SpaceDetailPage() {
           spaceName={normalizedSpaceName}
           space={space}
           setModalOpen={setModalOpen}
+          userId={convexUser?._id}
         />
         {/* Feedback Column */}
         <FeedbackColumn assistantId={space?.assistantId} />

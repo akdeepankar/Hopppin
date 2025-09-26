@@ -49,10 +49,10 @@ export default createInternalMutation({
       }
     }
 
-    if (isFirstInit && getEnv().DEPLOY_ENV === 'development') {
-      // Run the seed function
-      await ctx.runMutation(internal.seed.seed, {});
-    }
+    // if (isFirstInit && getEnv().DEPLOY_ENV === 'development') {
+    //   // Run the seed function
+    //   await ctx.runMutation(internal.seed.seed, {});
+    // }
 
     return null;
   },

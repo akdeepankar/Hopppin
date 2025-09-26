@@ -11,6 +11,7 @@ import CreateSpaceModal from './CreateSpaceModal';
 import { v } from 'convex/values';
 import Link from 'next/link';
 import React from 'react';
+import { Loader } from '@/components/ui/Loader';
 
 export default function StudioPage() {
   const { data, isPending } = useSession();
@@ -67,7 +68,7 @@ export default function StudioPage() {
   if (isPending || !sessionActive) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950 text-white">
-        <p className="text-lg font-medium">Loading...</p>
+        <Loader />
       </div>
     );
   }
@@ -118,7 +119,7 @@ export default function StudioPage() {
               <button
                 className="rounded-lg bg-fuchsia-500 px-6 py-2 text-sm font-semibold text-white transition hover:bg-fuchsia-600 disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={() => setModalOpen(true)}
-                disabled={userSpaces && userSpaces.length >= 1}
+                disabled={userSpaces && userSpaces.length >= 2}
               >
                 Create Space
               </button>
@@ -128,7 +129,7 @@ export default function StudioPage() {
                 checkFn && (
                   <>
                     <div className="mt-2 text-sm font-medium text-red-400">
-                      Space limit exceeded. You can only create 1 space.
+                      Space limit exceeded. You can only create 2 spaces.
                     </div>
                     <button
                       className="animate-shimmer mt-4 w-full rounded-lg bg-gradient-to-r from-fuchsia-500 via-pink-500 to-yellow-400 px-6 py-2 text-sm font-bold text-white shadow-lg transition hover:from-fuchsia-600 hover:to-yellow-500 focus:ring-2 focus:ring-fuchsia-400 focus:outline-none"

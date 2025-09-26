@@ -18,7 +18,7 @@ export const getIsAuthenticated = createPublicQuery({
 
     const session = (await auth.api.getSession({
       headers,
-    })) as Session | null;
+    }) as unknown) as Session | null;
 
     return !!session;
   },
