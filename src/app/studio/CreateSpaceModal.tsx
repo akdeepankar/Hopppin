@@ -57,7 +57,7 @@ export default function CreateSpaceModal({
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-xl border border-neutral-800 bg-neutral-950 p-6 shadow-xl">
         <h2 className="mb-2 text-xl font-bold text-white">Create a Space</h2>
         <input
-          className="w-full rounded border border-neutral-800 bg-neutral-900 px-3 py-2 text-white focus:border-fuchsia-500 focus:outline-none"
+          className="w-full rounded border border-neutral-800 bg-neutral-900 px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
           placeholder="Space name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -70,7 +70,7 @@ export default function CreateSpaceModal({
         {error && <div className="text-sm text-red-500">{error}</div>}
         <div className="mt-2 flex gap-2">
           <button
-            className="flex-1 rounded bg-fuchsia-500 px-4 py-2 font-semibold text-white transition hover:bg-fuchsia-600"
+            className="flex-1 rounded bg-blue-500 px-4 py-2 font-semibold text-white transition hover:bg-blue-600"
             onClick={handleCreate}
             disabled={!name.trim() || loading}
           >

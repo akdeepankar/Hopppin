@@ -5,10 +5,11 @@ export const autumn = new Autumn(components.autumn, {
 	secretKey: process.env.AUTUMN_SECRET_KEY ?? "",
 	identify: async (ctx: any) => {
 		const user = await ctx.auth.getUserIdentity();
+    console.log("Autumn identify user:", user);
 		if (!user) return null
 
 		return {
-			customerId: user.id as string,
+			customerId: user.userId as string,
 			customerData: {
 				name: user.name as string,
 				email: user.email as string,

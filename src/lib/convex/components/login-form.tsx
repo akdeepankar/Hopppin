@@ -3,6 +3,7 @@
 import * as React from 'react';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 
@@ -17,12 +18,16 @@ export function SignForm() {
   let [callbackUrl] = useQueryState('callbackUrl');
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [googleLoading, setGoogleLoading] = React.useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'terms' | 'privacy' | null>(null);
 
   if (!callbackUrl && !authRoutes.includes(pathname)) {
     callbackUrl = encodeURL(pathname, searchParams.toString());
   }
 
   const handleGoogleSignIn = () => {
+    setGoogleLoading(true);
     const callback = callbackUrl
       ? decodeURIComponent(callbackUrl)
       : routes.studio();
@@ -45,38 +50,96 @@ export function SignForm() {
   };
 
   return (
-    <div className={cn('mx-auto grid max-w-[268px] gap-3')}>
-      <Button
-        size="lg"
-        variant="outline"
-        className="w-full"
-        onClick={handleGoogleSignIn}
-      >
-        <GoogleIcon />
-        Continue with Google
-      </Button>
-
+    <div
+      className={cn(
+        'mx-auto grid max-w-[268px] gap-3 rounded-xl bg-neutral-950 p-6 text-white shadow-lg'
+      )}
+    >
       <Button
         size="lg"
         variant="default"
-        className="w-full"
+        className="w-full border border-neutral-700 bg-neutral-900 text-white transition-colors hover:bg-neutral-800 hover:text-blue-300"
+        onClick={handleGoogleSignIn}
+        disabled={googleLoading}
+      >
+        {googleLoading ? (
+          <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-blue-400 border-t-transparent align-middle" />
+        ) : (
+          <GoogleIcon />
+        )}
+        <span className="ml-2 font-semibold">Continue with Google</span>
+      </Button>
+
+      {/**
+      <Button
+        size="lg"
+        variant="default"
+        className="w-full bg-neutral-900 text-white border border-neutral-700 hover:bg-neutral-800 hover:text-blue-300 transition-colors"
         onClick={handleGithubSignIn}
       >
         <GitHubIcon />
-        Continue with Github
+        <span className="ml-2 font-semibold">Continue with Github</span>
       </Button>
+      */}
 
       <div className="my-3 max-w-xs text-center text-xs text-balance text-muted-foreground">
         By continuing, you agree to our{' '}
-        <Link className="font-semibold hover:underline" href={routes.terms()}>
+        <button
+          type="button"
+          className="cursor-pointer border-none bg-transparent font-semibold text-gray-300 outline-none hover:underline"
+          onClick={() => {
+            setModalType('terms');
+            setModalOpen(true);
+          }}
+        >
           Terms of Service
-        </Link>{' '}
+        </button>{' '}
         and acknowledge you've read our{' '}
-        <Link className="font-semibold hover:underline" href={routes.privacy()}>
+        <button
+          type="button"
+          className="cursor-pointer border-none bg-transparent font-semibold text-gray-300 outline-none hover:underline"
+          onClick={() => {
+            setModalType('privacy');
+            setModalOpen(true);
+          }}
+        >
           Privacy Policy
-        </Link>
+        </button>
         .
       </div>
+
+      {/* Modal Popup */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="relative w-full max-w-xs rounded-lg bg-neutral-900 p-6 text-white shadow-lg">
+            <button
+              className="absolute top-2 right-2 text-xl font-bold text-neutral-400 hover:text-blue-300"
+              onClick={() => setModalOpen(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <h2 className="mb-2 text-center text-lg font-bold text-blue-300">
+              {modalType === 'terms' ? 'Terms of Service' : 'Privacy Policy'}
+            </h2>
+            <ul className="list-disc space-y-2 pl-5 text-sm">
+              {modalType === 'terms' ? (
+                <>
+                  <li>Use the service respectfully and lawfully.</li>
+                  <li>No spamming or abusive behavior.</li>
+                  <li>Accounts may be suspended for violations.</li>
+                </>
+              ) : (
+                <>
+                  <li>Your data is kept private and secure.</li>
+                  <li>We do not sell your personal information.</li>
+                  <li>See our full policy for more details.</li>
+                </>
+              )}
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

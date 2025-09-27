@@ -53,7 +53,13 @@ export default function SpaceDetailPage() {
     }
   }, [isPending, space, convexUser, router]);
 
-  if (isPending) {
+  // Show loader while loading or while any required data is not yet loaded
+  if (
+    isPending ||
+    typeof user === 'undefined' ||
+    typeof convexUser === 'undefined' ||
+    typeof space === 'undefined'
+  ) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-950 text-white">
         <Loader />
@@ -61,7 +67,7 @@ export default function SpaceDetailPage() {
     );
   }
 
-  // Show access denied if no session/user, or not the owner
+  // Show access denied if no session/user, or not the owner (only after all data is loaded)
   if (!user || !convexUser || !space || space.createdBy !== convexUser._id) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-950 text-white">

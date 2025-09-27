@@ -68,9 +68,9 @@ export default function PublicSpacePage({
       <div className="flex min-h-screen items-center justify-center bg-neutral-950 text-white">
         <form
           onSubmit={handleUnlock}
-          className="flex flex-col items-center gap-4 rounded-2xl border border-fuchsia-800 bg-neutral-900 p-8 shadow-xl"
+          className="flex flex-col items-center gap-4 rounded-2xl border border-blue-800 bg-neutral-900 p-8 shadow-xl"
         >
-          <h2 className="mb-2 text-2xl font-bold text-fuchsia-400">
+          <h2 className="mb-2 text-2xl font-bold text-blue-400">
             Protected Space
           </h2>
           <p className="mb-2 text-neutral-400">
@@ -81,13 +81,13 @@ export default function PublicSpacePage({
             maxLength={4}
             value={passcodeInput}
             onChange={(e) => setPasscodeInput(e.target.value)}
-            className="w-32 rounded border border-neutral-700 bg-neutral-800 px-3 py-2 text-center text-lg tracking-widest text-white focus:ring-2 focus:ring-fuchsia-500 focus:outline-none"
+            className="w-32 rounded border border-neutral-700 bg-neutral-800 px-3 py-2 text-center text-lg tracking-widest text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
             autoFocus
           />
           {passError && <div className="text-sm text-red-500">{passError}</div>}
           <button
             type="submit"
-            className="mt-2 rounded bg-fuchsia-600 px-6 py-2 font-semibold text-white transition hover:bg-fuchsia-700"
+            className="mt-2 rounded bg-blue-600 px-6 py-2 font-semibold text-white transition hover:bg-blue-700"
           >
             Unlock
           </button>
@@ -97,48 +97,39 @@ export default function PublicSpacePage({
   }
 
   return (
-    <div className="flex min-h-screen bg-neutral-950 text-white">
-      {/* Sidebar */}
-      <aside className="hidden w-64 flex-col border-r border-neutral-800 bg-neutral-900 p-8 md:flex">
-        <h2 className="mb-8 text-2xl font-bold tracking-tight text-fuchsia-400">
-          Space Dashboard
-        </h2>
-        <div className="flex-1">
-          <div className="mb-6">
-            <div className="mb-2 text-xs text-neutral-500 uppercase">
-              Space Name
-            </div>
-            <div className="text-lg font-semibold text-white">{space.name}</div>
-          </div>
-          <div className="mb-4 text-sm text-neutral-400">
-            <span className="mb-1 block">
-              <span className="font-medium text-neutral-300">Created by:</span>{' '}
-              <span className="text-neutral-200">{creatorName}</span>
-            </span>
-            <span className="block">
-              <span className="font-medium text-neutral-300">Created at:</span>{' '}
-              <span>{new Date(space.createdAt).toLocaleString()}</span>
-            </span>
-          </div>
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-neutral-950 p-8 text-white">
+      <div
+        className="fixed top-0 left-0 z-50 p-8"
+        style={{ pointerEvents: 'none' }}
+      >
+        <h1
+          className="mb-1 text-6xl font-extrabold text-gray-300/30 drop-shadow-lg"
+          style={{ lineHeight: 1 }}
+        >
+          {space.name}
+        </h1>
+        <div
+          className="mt-2 text-lg font-light text-neutral-300 italic drop-shadow"
+          style={{ fontSize: '1.1rem' }}
+        >
+          Created by:{' '}
+          <span className="font-semibold text-neutral-100">{creatorName}</span>
         </div>
-      </aside>
-      {/* Main Content */}
-      <main className="flex flex-1 flex-col items-center justify-center p-8">
-        <div className="w-full max-w-2xl rounded-2xl border border-neutral-800 bg-neutral-900 p-10 shadow-2xl">
-          <div className="my-6 h-px w-full bg-neutral-800/60" />
-          {space.assistantId ? (
-            <div className="flex flex-col items-center gap-3 rounded-xl border border-fuchsia-900/40 bg-neutral-950 p-6 shadow-inner">
-              <VapiWidget
-                apiKey={process.env.NEXT_PUBLIC_VAPI_PUBLIC_API_KEY || ''}
-                assistantId={space.assistantId}
-              />
-            </div>
-          ) : (
-            <div className="mt-6 text-center text-base text-neutral-500">
-              No assistant linked to this space.
-            </div>
-          )}
-        </div>
+      </div>
+      <main className="z-10 flex w-full flex-1 flex-col items-center justify-center">
+        {space.assistantId ? (
+          <div className="flex flex-col items-center justify-center gap-6 py-10">
+            <VapiWidget
+              apiKey={process.env.NEXT_PUBLIC_VAPI_PUBLIC_API_KEY || ''}
+              assistantId={space.assistantId}
+              fixed={false}
+            />
+          </div>
+        ) : (
+          <div className="mt-6 text-center text-base text-neutral-500">
+            No assistant linked to this space.
+          </div>
+        )}
       </main>
     </div>
   );

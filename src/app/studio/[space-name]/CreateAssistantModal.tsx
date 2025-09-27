@@ -141,7 +141,7 @@ export default function CreateAssistantModal({
                   Assistant Name
                 </label>
                 <Input
-                  className="border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-fuchsia-600 focus:outline-none"
+                  className="border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-600 focus:outline-none"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Support Assistant"
@@ -186,7 +186,7 @@ export default function CreateAssistantModal({
                 System Prompt (about the assistant)
               </label>
               <Textarea
-                className="min-h-[200px] border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-fuchsia-600 focus:outline-none"
+                className="min-h-[200px] border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-600 focus:outline-none"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 required

@@ -164,7 +164,7 @@ export function ShareModal({
               value={html}
               onChange={(e) => setHtml(e.target.value)}
               rows={6}
-              className="resize-y rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:ring-2 focus:ring-fuchsia-500 focus:outline-none"
+              className="resize-y rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
           {error && <div className="mb-2 text-xs text-red-400">{error}</div>}

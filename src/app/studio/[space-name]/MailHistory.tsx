@@ -38,9 +38,7 @@ export function MailHistory({
           <div className="mb-1 text-xs text-neutral-400">
             {new Date(email.sentAt).toLocaleString()}
           </div>
-          <div className="mb-1 font-semibold text-fuchsia-300">
-            To: {email.to}
-          </div>
+          <div className="mb-1 font-semibold text-blue-300">To: {email.to}</div>
           <div className="mb-1 text-sm text-neutral-200">
             Subject: {email.subject}
           </div>

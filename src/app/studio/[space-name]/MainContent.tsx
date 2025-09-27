@@ -1,3 +1,35 @@
+// CopyButton component for feedback and tooltip
+function CopyButton({ url }: { url: string }) {
+  const [copied, setCopied] = React.useState(false);
+  return (
+    <button
+      className={`relative rounded bg-blue-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-blue-700`}
+      onClick={async () => {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1200);
+      }}
+      title="Copy to clipboard"
+    >
+      <svg
+        className="mr-1 inline h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+      </svg>
+      {copied ? 'Copied!' : 'Copy'}
+      {copied && (
+        <span className="absolute -top-7 left-1/2 -translate-x-1/2 rounded border border-green-700 bg-neutral-800 px-2 py-1 text-xs text-green-400 shadow-lg">
+          Copied!
+        </span>
+      )}
+    </button>
+  );
+}
 import React, { useState, useEffect } from 'react';
 import CreateAssistantModal from './CreateAssistantModal';
 import { ShareModal } from './ShareModal';
@@ -159,30 +191,69 @@ export function MainContent({
           )}
           {activeTab === 'share' && space?.assistantId && (
             <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-              <h2 className="mb-4 text-xl font-semibold">Public URL</h2>
-              <div className="mb-2 flex w-full max-w-full items-center gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={publicUrl}
-                  className="flex-1 rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  id="public-url-input"
-                />
-                <button
-                  className="rounded bg-blue-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-blue-700"
-                  onClick={async () => {
-                    await navigator.clipboard.writeText(publicUrl);
-                  }}
+              <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-blue-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  Copy
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+                Public URL
+              </h2>
+              <div className="mb-2 flex w-full max-w-full items-center gap-2">
+                <div className="relative flex flex-1 items-center">
+                  <svg
+                    className="absolute left-2 h-4 w-4 text-blue-400"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  <input
+                    type="text"
+                    readOnly
+                    value={publicUrl}
+                    className="flex-1 rounded border border-neutral-700 bg-neutral-800 py-1 pr-2 pl-8 text-sm text-white transition-all duration-150 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    id="public-url-input"
+                  />
+                </div>
+                <CopyButton url={publicUrl} />
                 <button
                   className="rounded bg-blue-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-blue-700"
                   onClick={() => setShareOpen(true)}
+                  title="Share this space"
                 >
+                  <svg
+                    className="mr-1 inline h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 12v.01M12 4v.01M20 12v.01M12 20v.01M7.05 7.05l.01.01M16.95 7.05l.01.01M16.95 16.95l.01.01M7.05 16.95l.01.01"
+                    />
+                  </svg>
                   Share
                 </button>
               </div>
+
               <ShareModal
                 open={shareOpen}
                 onClose={() => setShareOpen(false)}
