@@ -17,6 +17,8 @@ import {
 } from '@inkeep/cxkit-react-oss';
 
 import { useEffect } from 'react';
+import ScorecardCreateTestset from '@/components/scorecard/Scorecard';
+import { SkipBack, Stars } from 'lucide-react';
 
 interface CreateAssistantModalProps {
   open: boolean;
@@ -44,6 +46,9 @@ export default function CreateAssistantModal({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [showScorecard, setShowScorecard] = useState(false);
+  const [enhanceSuccess, setEnhanceSuccess] = useState(false);
+  const [originalPrompt, setOriginalPrompt] = useState<string | null>(null);
 
   // Prefill state when assistantData changes (for update mode)
   useEffect(() => {
@@ -182,15 +187,93 @@ export default function CreateAssistantModal({
               </div>
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-neutral-300">
-                System Prompt (about the assistant)
-              </label>
-              <Textarea
-                className="min-h-[200px] border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-600 focus:outline-none"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                required
-              />
+              <div className="mb-4 flex items-center justify-between">
+                <label className="block text-sm font-medium text-neutral-300">
+                  System Prompt (about the assistant)
+                </label>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 py-1 text-xs text-black"
+                    disabled={loading}
+                    onClick={async () => {
+                      setLoading(true);
+                      setEnhanceSuccess(false);
+                      setOriginalPrompt(content); // Save original before enhancing
+                      try {
+                        const res = await fetch('/api/enhance-prompt', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ prompt: content }),
+                        });
+                        if (!res.ok)
+                          throw new Error('Failed to enhance prompt');
+                        const data = await res.json();
+                        if (data?.enhanced) {
+                          setContent(data.enhanced);
+                          setEnhanceSuccess(true);
+                        }
+                      } catch (err) {
+                        alert('Error enhancing prompt');
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                  >
+                    {loading ? (
+                      <svg
+                        className="mr-2 inline h-4 w-4 animate-spin text-black"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8z"
+                        />
+                      </svg>
+                    ) : (
+                      <>
+                        <Stars /> Enhance
+                      </>
+                    )}
+                  </Button>
+                  {enhanceSuccess && originalPrompt && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-7 bg-transparent px-2 py-1 text-xs text-white"
+                      disabled={loading}
+                      onClick={() => {
+                        setContent(originalPrompt);
+                        setEnhanceSuccess(false);
+                      }}
+                    >
+                      <SkipBack />
+                      Revert
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <Textarea
+                  className="min-h-[200px] border-neutral-700 bg-neutral-800 text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  required
+                />
+              </div>
               <div className="mt-1 text-xs text-neutral-500">
                 Describe your assistant's behavior, personality, or rules.
               </div>
@@ -235,6 +318,15 @@ export default function CreateAssistantModal({
               )}
             </Button>
           </form>
+          {/* Show Scorecard only if Enhance Prompt is successful */}
+          {enhanceSuccess && (
+            <div className="mt-6">
+              <ScorecardCreateTestset
+                user_prompt={originalPrompt ?? ''}
+                expected_response={content}
+              />
+            </div>
+          )}
         </div>
         {/* Right: Inkeep Chat */}
         <div className="flex h-[90vh] min-w-[320px] flex-1 flex-col border-l border-neutral-800 pl-8">
@@ -243,8 +335,7 @@ export default function CreateAssistantModal({
               const embeddedChatProps: InkeepEmbeddedChatProps = {
                 aiChatSettings: {
                   graphUrl: 'http://localhost:3003/api/chat',
-                  apiKey:
-                    'sk_GT34zW85KGFt.rmsVE21gE1WJrq7VRbPzsW3eHz00FNvb1qciCK_mqKE', // Your API key
+                  apiKey: process.env['REACT_APP_INKEEP_API_KEY'] || '', // Your API key
                 },
               };
               return <InkeepEmbeddedChat {...embeddedChatProps} />;

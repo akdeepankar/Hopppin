@@ -153,128 +153,131 @@ export function CallFeedbacks({ calls }: CallFeedbacksProps) {
           );
         })()}
       </div>
-      {calls.map((call) => (
-        <Card
-          key={call.id}
-          className="border border-neutral-800 bg-gradient-to-br from-neutral-950 to-neutral-900/80 transition-shadow hover:shadow-lg"
-        >
-          <CardHeader className="">
-            <CardTitle className="flex items-center gap-2 text-base font-semibold text-white">
-              <span className="text-white">
-                {call.createdAt
-                  ? new Date(call.createdAt).toLocaleString()
-                  : 'Unknown date'}
-              </span>
-              {(() => {
-                let label = '';
-                let colorClass = '';
-                if (
-                  call.analysis &&
-                  call.analysis.successEvaluation === 'true'
-                ) {
-                  label = 'Success';
-                  colorClass = 'bg-green-900 text-green-300';
-                } else if (
-                  call.analysis &&
-                  call.analysis.successEvaluation === 'false'
-                ) {
-                  label = 'Failed';
-                  colorClass = 'bg-red-900 text-red-300';
-                } else if (
-                  call.endedReason ===
-                  'call.in-progress.error-assistant-did-not-receive-customer-audio'
-                ) {
-                  label = 'Failed';
-                  colorClass = 'bg-red-900 text-red-300';
-                } else if (
-                  call.status === 'failed' ||
-                  call.status === 'error'
-                ) {
-                  label = 'Failed';
-                  colorClass = 'bg-red-900 text-red-300';
-                } else if (
-                  call.status === 'ended' ||
-                  call.status === 'completed' ||
-                  call.status === 'success'
-                ) {
-                  label = 'Success';
-                  colorClass = 'bg-green-900 text-green-300';
-                } else {
-                  colorClass = 'bg-yellow-900 text-yellow-300';
-                  label = call.status
-                    ? call.status.charAt(0).toUpperCase() + call.status.slice(1)
-                    : 'Unknown';
-                }
-                return (
-                  <span
-                    className={`ml-auto rounded px-2 py-0.5 text-xs font-medium ${colorClass}`}
-                  >
-                    {label}
-                  </span>
-                );
-              })()}
-            </CardTitle>
-            {call.summary && (
-              <div className="mt-2" style={{ maxWidth: '100%' }}>
-                <div
-                  className="flex flex-col rounded-lg border border-sky-400/10 bg-sky-200/10 px-3 py-2 shadow-sm dark:bg-sky-900/40"
-                  style={{ maxWidth: '100%' }}
-                >
-                  <span className="mb-1 flex items-center gap-1 text-xs font-semibold text-white dark:text-white">
-                    <Sparkles
-                      className="h-3.5 w-3.5 fill-blue-400 text-blue-400"
-                      fill="currentColor"
-                    />
-                    Summary
-                  </span>
-                  <InfoDialog
-                    trigger={
-                      <span
-                        className="text-md block cursor-pointer text-white select-text dark:text-sky-100"
-                        style={{
-                          display: '-webkit-box',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          WebkitLineClamp: 3,
-                          WebkitBoxOrient: 'vertical',
-                          maxWidth: '100%',
-                        }}
-                        title={call.summary}
-                      >
-                        {call.summary}
-                      </span>
-                    }
-                    title="Summary"
-                    description="Full call summary"
-                    content={call.summary}
-                  />
-                </div>
-              </div>
-            )}
-          </CardHeader>
-          <CardContent className="-mt-2 flex flex-col gap-2 pt-0">
-            {call.recordingUrl ? (
-              <div className="flex flex-col gap-1">
-                <span className="mb-1 text-xs font-medium text-muted-foreground">
-                  Audio Recording:
+      {calls.map((call) => {
+        const [showScorecard, setShowScorecard] = React.useState(false);
+        return (
+          <Card
+            key={call.id}
+            className="border border-neutral-800 bg-gradient-to-br from-neutral-950 to-neutral-900/80 transition-shadow hover:shadow-lg"
+          >
+            <CardHeader className="">
+              <CardTitle className="flex items-center gap-2 text-base font-semibold text-white">
+                <span className="text-white">
+                  {call.createdAt
+                    ? new Date(call.createdAt).toLocaleString()
+                    : 'Unknown date'}
                 </span>
-                <div className="flex w-full flex-row items-center gap-2">
+                {(() => {
+                  let label = '';
+                  let colorClass = '';
+                  if (
+                    call.analysis &&
+                    call.analysis.successEvaluation === 'true'
+                  ) {
+                    label = 'Success';
+                    colorClass = 'bg-green-900 text-green-300';
+                  } else if (
+                    call.analysis &&
+                    call.analysis.successEvaluation === 'false'
+                  ) {
+                    label = 'Failed';
+                    colorClass = 'bg-red-900 text-red-300';
+                  } else if (
+                    call.endedReason ===
+                    'call.in-progress.error-assistant-did-not-receive-customer-audio'
+                  ) {
+                    label = 'Failed';
+                    colorClass = 'bg-red-900 text-red-300';
+                  } else if (
+                    call.status === 'failed' ||
+                    call.status === 'error'
+                  ) {
+                    label = 'Failed';
+                    colorClass = 'bg-red-900 text-red-300';
+                  } else if (
+                    call.status === 'ended' ||
+                    call.status === 'completed' ||
+                    call.status === 'success'
+                  ) {
+                    label = 'Success';
+                    colorClass = 'bg-green-900 text-green-300';
+                  } else {
+                    colorClass = 'bg-yellow-900 text-yellow-300';
+                    label = call.status
+                      ? call.status.charAt(0).toUpperCase() +
+                        call.status.slice(1)
+                      : 'Unknown';
+                  }
+                  return (
+                    <span
+                      className={`ml-auto rounded px-2 py-0.5 text-xs font-medium ${colorClass}`}
+                    >
+                      {label}
+                    </span>
+                  );
+                })()}
+              </CardTitle>
+              {call.summary && (
+                <div className="mt-2" style={{ maxWidth: '100%' }}>
                   <div
-                    className="mt-1 flex flex-grow items-center rounded-lg border border-neutral-800 bg-white p-1 shadow-inner transition focus-within:ring-2 focus-within:ring-ring hover:shadow-md"
-                    style={{ height: '36px', minHeight: 'unset' }}
+                    className="flex flex-col rounded-lg border border-sky-400/10 bg-sky-200/10 px-3 py-2 shadow-sm dark:bg-sky-900/40"
+                    style={{ maxWidth: '100%' }}
                   >
-                    <audio
-                      controls
-                      src={call.recordingUrl}
-                      className="h-6 w-full min-w-0 bg-transparent outline-none"
-                      style={{
-                        background: 'none',
-                        height: '30px',
-                        minHeight: 0,
-                      }}
+                    <span className="mb-1 flex items-center gap-1 text-xs font-semibold text-white dark:text-white">
+                      <Sparkles
+                        className="h-3.5 w-3.5 fill-blue-400 text-blue-400"
+                        fill="currentColor"
+                      />
+                      Summary
+                    </span>
+                    <InfoDialog
+                      trigger={
+                        <span
+                          className="text-md block cursor-pointer text-white select-text dark:text-sky-100"
+                          style={{
+                            display: '-webkit-box',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            maxWidth: '100%',
+                          }}
+                          title={call.summary}
+                        >
+                          {call.summary}
+                        </span>
+                      }
+                      title="Summary"
+                      description="Full call summary"
+                      content={call.summary}
                     />
                   </div>
-                  {call.transcript && (
+                </div>
+              )}
+              {/* Transcript logic remains, but Scorecard and Generate Score button removed */}
+            </CardHeader>
+            <CardContent className="-mt-2 flex flex-col gap-2 pt-0">
+              {call.recordingUrl ? (
+                <div className="flex flex-col gap-1">
+                  <span className="mb-1 text-xs font-medium text-muted-foreground">
+                    Audio Recording:
+                  </span>
+                  <div className="flex w-full flex-row items-center gap-2">
+                    <div
+                      className="mt-1 flex flex-grow items-center rounded-lg border border-neutral-800 bg-white p-1 shadow-inner transition focus-within:ring-2 focus-within:ring-ring hover:shadow-md"
+                      style={{ height: '36px', minHeight: 'unset' }}
+                    >
+                      <audio
+                        controls
+                        src={call.recordingUrl}
+                        className="h-6 w-full min-w-0 bg-transparent outline-none"
+                        style={{
+                          background: 'none',
+                          height: '30px',
+                          minHeight: 0,
+                        }}
+                      />
+                    </div>
                     <div className="flex-shrink-0">
                       <InfoDialog
                         trigger={
@@ -291,17 +294,17 @@ export function CallFeedbacks({ calls }: CallFeedbacksProps) {
                         content={call.transcript}
                       />
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <span className="text-xs text-muted-foreground">
-                No recording available
-              </span>
-            )}
-          </CardContent>
-        </Card>
-      ))}
+              ) : (
+                <span className="text-xs text-muted-foreground">
+                  No recording available
+                </span>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }

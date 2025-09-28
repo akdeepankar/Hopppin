@@ -174,9 +174,10 @@ export default function StudioPage() {
                       onClick={async () => {
                         const dialogClosed = false;
                         setCheckingProStatus(true);
-                        await checkout({
+                        checkout({
                           productId: 'pro',
                           dialog: CheckoutDialog,
+                          successUrl: window.location.href,
                         });
                         // Poll for pro status after checkout, unless dialog was dismissed
                         let attempts = 0;

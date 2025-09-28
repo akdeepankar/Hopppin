@@ -191,6 +191,9 @@ importers:
       nuqs:
         specifier: 2.6.0
         version: 2.6.0(next@15.5.3(@opentelemetry/api@1.9.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
+      openai:
+        specifier: ^5.23.1
+        version: 5.23.1(ws@8.18.3)(zod@3.25.76)
       react:
         specifier: 19.1.1
         version: 19.1.1
@@ -209,6 +212,9 @@ importers:
       recharts:
         specifier: 2.15.4
         version: 2.15.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      scorecard-ai:
+        specifier: ^2.1.1
+        version: 2.1.1
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -5616,6 +5622,18 @@ packages:
       zod:
         optional: true
 
+  openai@5.23.1:
+    resolution: {integrity: sha512-APxMtm5mln4jhKhAr0d5zP9lNsClx4QwJtg8RUvYSSyxYCTHLNJnLEcSHbJ6t0ori8Pbr9HZGfcPJ7LEy73rvQ==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.23.8
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
+
   openapi3-ts@4.5.0:
     resolution: {integrity: sha512-jaL+HgTq2Gj5jRcfdutgRGLosCy/hT8sQf6VOy+P+g36cZOjI1iukdPnijC+4CmeRzg/jEllJUboEic2FhxhtQ==}
 
@@ -6140,6 +6158,9 @@ packages:
 
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
+
+  scorecard-ai@2.1.1:
+    resolution: {integrity: sha512-PtyQmGO4fzKBGqD0VnFn2iiPuU+2BCj1JFumUR3CIAAywY3RyyYgpHML00mooTAb3m4KBBQAZjlNm/Jal7dPBA==}
 
   secure-json-parse@2.7.0:
     resolution: {integrity: sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==}
@@ -12599,6 +12620,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  openai@5.23.1(ws@8.18.3)(zod@3.25.76):
+    optionalDependencies:
+      ws: 8.18.3
+      zod: 3.25.76
+
   openapi3-ts@4.5.0:
     dependencies:
       yaml: 2.8.1
@@ -13139,6 +13165,8 @@ snapshots:
   safer-buffer@2.1.2: {}
 
   scheduler@0.26.0: {}
+
+  scorecard-ai@2.1.1: {}
 
   secure-json-parse@2.7.0: {}
 
