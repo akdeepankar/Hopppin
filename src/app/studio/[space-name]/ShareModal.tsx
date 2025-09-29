@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Send } from 'lucide-react';
+import { Mail, Send, Share } from 'lucide-react';
 
 interface ShareModalProps {
   open: boolean;
@@ -22,7 +22,6 @@ export function ShareModal({
 }: ShareModalProps) {
   const [emailInput, setEmailInput] = useState('');
   const [emails, setEmails] = useState<string[]>([]);
-  const [from, setFrom] = useState('Me <test@mydomain.com>');
   const [subject, setSubject] = useState(`Join my space: ${space?.name || ''}`);
   const [html, setHtml] = useState(() => {
     let msg = `Hi!\n\nI invite you to join my space: ${space?.name || ''}.`;
@@ -74,6 +73,7 @@ export function ShareModal({
     setError('');
     setSuccess('');
     const to = emails.join(',');
+    const from = 'send@hoppp.in';
     console.log('Sending email to:', to);
     try {
       const res = await fetch('/api/send-space-email', {
@@ -98,10 +98,12 @@ export function ShareModal({
       onClick={handleBackdropClick}
     >
       <div
-        className="w-full max-w-2xl rounded-lg bg-neutral-900 p-8 shadow-2xl"
+        className="w-full max-w-2xl rounded-lg bg-neutral-950 p-8 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-xl font-bold text-white">Share Space</h2>
+        <h2 className="mb-4 flex gap-2 text-xl font-bold text-white">
+          <Mail className="pt-1" /> Share Space
+        </h2>
         <div className="mb-4">
           <div className="mb-2 flex items-center gap-2">
             <Input
@@ -149,12 +151,6 @@ export function ShareModal({
           <div className="mb-2 flex flex-col gap-2">
             <Input
               type="text"
-              placeholder="From (e.g. Me <test@mydomain.com>)"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-            />
-            <Input
-              type="text"
               placeholder="Subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
@@ -164,7 +160,12 @@ export function ShareModal({
               value={html}
               onChange={(e) => setHtml(e.target.value)}
               rows={6}
-              className="resize-y rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="max-h-32 min-h-[2.5rem] resize-none overflow-auto rounded border border-neutral-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              style={{
+                maxHeight: '8rem',
+                minHeight: '2.5rem',
+                overflow: 'auto',
+              }}
             />
           </div>
           {error && <div className="mb-2 text-xs text-red-400">{error}</div>}

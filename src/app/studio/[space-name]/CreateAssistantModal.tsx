@@ -18,7 +18,7 @@ import {
 
 import { useEffect } from 'react';
 import ScorecardCreateTestset from '@/components/scorecard/Scorecard';
-import { SkipBack, Stars } from 'lucide-react';
+import { AsteriskSquare, SkipBack, Stars } from 'lucide-react';
 
 interface CreateAssistantModalProps {
   open: boolean;
@@ -136,6 +136,7 @@ export default function CreateAssistantModal({
       >
         {/* Left: Assistant Form */}
         <div className="min-w-[320px] flex-1">
+          <AsteriskSquare />
           <h2 className="mb-4 text-2xl font-bold tracking-tight text-white">
             {isUpdateMode ? 'Update Assistant' : 'Create an Assistant'}
           </h2>
