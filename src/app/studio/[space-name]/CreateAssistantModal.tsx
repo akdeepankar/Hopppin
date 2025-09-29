@@ -18,7 +18,7 @@ import {
 
 import { useEffect } from 'react';
 import ScorecardCreateTestset from '@/components/scorecard/Scorecard';
-import { SkipBack, Stars } from 'lucide-react';
+import { SkipBack, Stars, StarsIcon } from 'lucide-react';
 
 interface CreateAssistantModalProps {
   open: boolean;
@@ -136,10 +136,13 @@ export default function CreateAssistantModal({
       >
         {/* Left: Assistant Form */}
         <div className="min-w-[320px] flex-1">
-          <SkipBack />
-          <h2 className="mb-4 text-2xl font-bold tracking-tight text-white">
-            {isUpdateMode ? 'Update Assistant' : 'Create an Assistant'}
-          </h2>
+          <div className="mb-6 flex items-center gap-4">
+            <SkipBack />
+            <h2 className="text-2xl font-bold tracking-tight text-white">
+              {isUpdateMode ? 'Update Assistant' : 'Create an Assistant'}
+            </h2>
+          </div>
+
           <form onSubmit={handleCreateAssistant} className="space-y-6">
             <div className="flex flex-row gap-4">
               <div className="flex-1">
@@ -330,7 +333,14 @@ export default function CreateAssistantModal({
           )}
         </div>
         {/* Right: Inkeep Chat */}
-        <div className="flex h-[90vh] min-w-[320px] flex-1 flex-col border-l border-neutral-800 pl-8">
+        <div className="flex h-[95vh] min-w-[320px] flex-1 flex-col border-l border-neutral-800 pl-8">
+          <div className="mb-2 flex gap-1 font-semibold">
+            {' '}
+            <StarsIcon className="text-blue-400" size={20} /> Brainstorm
+            <span className="text-blue-400 italic"> Inkeep</span> with
+            <span className="text-orange-400 italic"> Firecrawl</span>{' '}
+            Agent{' '}
+          </div>
           <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
             {(() => {
               const embeddedChatProps: InkeepEmbeddedChatProps = {
