@@ -80,7 +80,7 @@ export function Insight(props: InsightProps) {
             ],
           });
           const chatResp = await fetch(
-            'http://localhost:3002/tenants/default/projects/default/graphs/default/v1/chat/completions',
+            'https://manage-api-quickstart-production.up.railway.app/tenants/default/projects/weather-project/graphs/weather-graph/v1/chat/completions',
             {
               method: 'POST',
               headers: {

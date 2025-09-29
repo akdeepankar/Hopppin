@@ -335,8 +335,13 @@ export default function CreateAssistantModal({
             {(() => {
               const embeddedChatProps: InkeepEmbeddedChatProps = {
                 aiChatSettings: {
-                  graphUrl: 'http://localhost:3003/api/chat',
-                  apiKey: process.env['REACT_APP_INKEEP_API_KEY'] || '', // Your API key
+                  graphUrl:
+                    'https://run-api-quickstart-production.up.railway.app/api/chat',
+                  headers: {
+                    'x-inkeep-tenant-id': 'default',
+                    'x-inkeep-project-id': 'weather-project',
+                    'x-inkeep-graph-id': 'weather-graph',
+                  },
                 },
               };
               return <InkeepEmbeddedChat {...embeddedChatProps} />;
