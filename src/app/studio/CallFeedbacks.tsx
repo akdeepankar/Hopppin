@@ -84,6 +84,7 @@ function InfoDialog({
 
 export function CallFeedbacks({ calls }: CallFeedbacksProps) {
   const [insightOpen, setInsightOpen] = React.useState(false);
+  // Remove per-call useState from map, use a state object if needed in future
   if (!calls || calls.length === 0) {
     return (
       <div className="py-8 text-center text-sm text-muted-foreground">
@@ -154,7 +155,7 @@ export function CallFeedbacks({ calls }: CallFeedbacksProps) {
         })()}
       </div>
       {calls.map((call) => {
-        const [showScorecard, setShowScorecard] = React.useState(false);
+        // Removed: const [showScorecard, setShowScorecard] = React.useState(false);
         return (
           <Card
             key={call.id}
