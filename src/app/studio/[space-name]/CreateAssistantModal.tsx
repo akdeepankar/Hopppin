@@ -346,7 +346,9 @@ export default function CreateAssistantModal({
               const embeddedChatProps: InkeepEmbeddedChatProps = {
                 aiChatSettings: {
                   graphUrl: 'http://localhost:3003/api/chat',
-                  apiKey: process.env['REACT_APP_INKEEP_API_KEY'] || '', // Your API key
+                  apiKey:
+                    process.env['REACT_APP_INKEEP_API_KEY'] ||
+                    'sk_EejD9WUWC0-a.eYQzwD1xqGC4JiRH06wQ2BcaLvVS88jCT77k4-ulKI0', // Your API key
                 },
               };
               return <InkeepEmbeddedChat {...embeddedChatProps} />;
