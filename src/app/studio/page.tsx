@@ -278,6 +278,15 @@ export default function StudioPage() {
             </div>
           )}
         </div>
+        {/* Right column: Studio SVG */}
+        <div className="hidden flex-1 items-center justify-center bg-neutral-950 lg:flex">
+          <img
+            src="/studio.svg"
+            alt="Studio Illustration"
+            className="h-auto w-[95vh] opacity-60 drop-shadow-2xl select-none"
+            draggable="false"
+          />
+        </div>
       </main>
 
       {/* Footer */}
