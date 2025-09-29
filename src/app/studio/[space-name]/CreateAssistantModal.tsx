@@ -18,7 +18,7 @@ import {
 
 import { useEffect } from 'react';
 import ScorecardCreateTestset from '@/components/scorecard/Scorecard';
-import { AsteriskSquare, SkipBack, Stars } from 'lucide-react';
+import { SkipBack, Stars } from 'lucide-react';
 
 interface CreateAssistantModalProps {
   open: boolean;
@@ -136,7 +136,7 @@ export default function CreateAssistantModal({
       >
         {/* Left: Assistant Form */}
         <div className="min-w-[320px] flex-1">
-          <AsteriskSquare />
+          <SkipBack />
           <h2 className="mb-4 text-2xl font-bold tracking-tight text-white">
             {isUpdateMode ? 'Update Assistant' : 'Create an Assistant'}
           </h2>
@@ -335,13 +335,8 @@ export default function CreateAssistantModal({
             {(() => {
               const embeddedChatProps: InkeepEmbeddedChatProps = {
                 aiChatSettings: {
-                  graphUrl:
-                    'https://run-api-quickstart-production.up.railway.app/api/chat',
-                  headers: {
-                    'x-inkeep-tenant-id': 'default',
-                    'x-inkeep-project-id': 'weather-project',
-                    'x-inkeep-graph-id': 'weather-graph',
-                  },
+                  graphUrl: 'http://localhost:3003/api/chat',
+                  apiKey: process.env['REACT_APP_INKEEP_API_KEY'] || '', // Your API key
                 },
               };
               return <InkeepEmbeddedChat {...embeddedChatProps} />;
