@@ -80,7 +80,7 @@ export function Insight(props: InsightProps) {
             ],
           });
           const chatResp = await fetch(
-            'http://localhost:3002/tenants/default/projects/default/graphs/default/v1/chat/completions',
+            'http://localhost:3003/tenants/default/projects/weather-project/graphs/brainstorm/v1/chat/completions',
             {
               method: 'POST',
               headers: {

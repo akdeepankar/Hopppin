@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MicLoader from './MicLoader';
 import Vapi from '@vapi-ai/web';
 import Start from './start';
@@ -63,6 +63,17 @@ const VapiWidget: React.FC<VapiWidgetProps> = ({
       vapi.stop();
     }
   };
+
+  // Ref for chat scroll container
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when transcript changes
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [transcript]);
 
   return (
     <div
@@ -147,8 +158,8 @@ const VapiWidget: React.FC<VapiWidgetProps> = ({
           style={{
             background: 'rgba(255,255,255,0.02)',
             borderRadius: '18px',
-            padding: '24px',
-            width: '340px',
+            padding: '32px',
+            width: '480px',
             boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
             border: '1.5px solid rgba(255,255,255,0.05)',
             backdropFilter: 'blur(16px) saturate(180%)',
@@ -200,11 +211,13 @@ const VapiWidget: React.FC<VapiWidgetProps> = ({
             </button>
           </div>
           <div
+            ref={chatContainerRef}
             style={{
-              maxHeight: '200px',
+              maxHeight: '400px',
+              minHeight: '200px',
               overflowY: 'auto',
-              marginBottom: '12px',
-              padding: '8px',
+              marginBottom: '16px',
+              padding: '12px',
               background: 'rgba(255,255,255,0.02)',
               borderRadius: '8px',
             }}
