@@ -4,6 +4,7 @@ import {
   BarChart,
   CartesianGrid,
   XAxis,
+  YAxis,
   Radar,
   RadarChart,
   PolarGrid,
@@ -49,7 +50,7 @@ export function CallStats({
     { name: 'Successful', value: successful },
     { name: 'Failed', value: failed },
   ];
-  const outcomeColors = ['var(--chart-2)', 'var(--chart-3)'];
+  const outcomeColors = ['#10b981', '#ef4444']; // green for success, red for failed
   const callsBarData = [
     { name: 'Total', value: total },
     { name: 'Today', value: callsToday },
@@ -126,71 +127,31 @@ export function CallStats({
           </PieChart>
         </div>
 
-        {/* Calls Volume Radar Chart */}
+        {/* Calls Volume Bar Chart */}
         <div className="flex min-h-[260px] w-full flex-col items-center justify-center">
           <h4 className="mb-2 text-sm font-semibold text-neutral-200">
             Calls Volume
           </h4>
-          <RadarChart
-            cx={180}
-            cy={140}
-            outerRadius={110}
+          <BarChart
             width={360}
-            height={280}
+            height={220}
             data={callsBarData}
+            layout="vertical"
+            barCategoryGap={24}
+            barGap={8}
           >
-            <PolarGrid stroke="var(--neutral-700)" />
-            <PolarAngleAxis
-              dataKey="name"
-              tick={(props) => (
-                <text
-                  {...props}
-                  fill="var(--foreground, #fff)"
-                  fontWeight="bold"
-                  fontSize={14}
-                >
-                  {props.payload && props.payload.value}
-                </text>
-              )}
-            />
-            <PolarRadiusAxis
-              angle={30}
-              domain={[
-                0,
-                Math.max(...callsBarData.map((d) => d.value)) * 1.15 || 1,
-              ]}
-              tick={{ fill: 'var(--foreground, #fff)', fontSize: 12 }}
-              axisLine={false}
-            />
-            <Radar
-              name="Calls"
-              dataKey="value"
-              stroke="var(--chart-4)"
-              fill="var(--chart-4)"
-              fillOpacity={0.6}
-              isAnimationActive={false}
-              label={({ cx, cy, points, value }) =>
-                points
-                  ? points.map((pt, idx) => (
-                      <text
-                        key={callsBarData[idx].name}
-                        x={pt.x + (pt.x - cx) * 0.08}
-                        y={pt.y + (pt.y - cy) * 0.08}
-                        textAnchor="middle"
-                        fontSize="13"
-                        fontWeight="bold"
-                        fill="var(--foreground, #fff)"
-                        alignmentBaseline="middle"
-                      >
-                        {callsBarData[idx].value}
-                      </text>
-                    ))
-                  : null
-              }
-            />
+            <CartesianGrid vertical={false} />
+            <XAxis type="number" tickLine={false} axisLine={false} stroke="#fff" />
+            <YAxis type="category" dataKey="name" tickLine={false} axisLine={false} stroke="#fff" />
             <Tooltip />
             <Legend />
-          </RadarChart>
+            <Bar
+              dataKey="value"
+              fill="#87cefa" // light sky blue
+              radius={6}
+              label={{ position: 'right', fill: '#87cefa', fontWeight: 'bold', fontSize: 14 }}
+            />
+          </BarChart>
         </div>
 
         {/* Turns Bar Chart */}
@@ -232,59 +193,6 @@ export function CallStats({
               name="Bot"
             />
           </BarChart>
-        </div>
-
-        {/* Success vs Fail Bar Chart */}
-        <div className="flex min-h-[200px] w-full flex-col items-center justify-center">
-          <h4 className="mb-2 text-sm font-semibold text-neutral-200">
-            Success vs Fail
-          </h4>
-          <BarChart
-            width={250}
-            height={200}
-            data={successFailBarData}
-            barCategoryGap={32}
-            barGap={8}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="name" tickLine={false} axisLine={false} />
-            <Tooltip />
-            <Legend />
-            <Bar
-              dataKey="value"
-              fill="var(--chart-4)"
-              radius={6}
-              label={{
-                position: 'top',
-                fill: 'var(--chart-4)',
-                fontWeight: 'bold',
-                fontSize: 14,
-              }}
-            />
-          </BarChart>
-        </div>
-
-        {/* User vs Bot Turns Pie Chart */}
-        <div className="flex min-h-[200px] w-full flex-col items-center justify-center">
-          <h4 className="mb-2 text-sm font-semibold text-neutral-200">
-            User vs Bot Turns
-          </h4>
-          <PieChart width={250} height={200}>
-            <Pie
-              data={userBotPieData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={60}
-              label
-            >
-              <Cell key="user" fill="var(--chart-1)" />
-              <Cell key="bot" fill="var(--chart-2)" />
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
         </div>
 
         {/* Average Metrics Bar Chart */}
