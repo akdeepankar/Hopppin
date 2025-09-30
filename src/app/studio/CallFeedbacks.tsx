@@ -92,8 +92,22 @@ export function CallFeedbacks({ calls }: CallFeedbacksProps) {
       </div>
     );
   }
-  // Gather all summaries as a single string (or array if you want)
-  const allSummaries = calls
+  // Gather summaries only from successful calls
+  const successfulCallSummaries = calls
+    .filter((call) => {
+      // Check if the call is successful based on the same logic used below
+      const isSuccessful =
+        (call.analysis && call.analysis.successEvaluation === 'true') ||
+        call.status === 'completed' ||
+        call.status === 'success';
+
+      // Exclude calls with specific error reason
+      const hasErrorReason =
+        call.endedReason ===
+        'call.in-progress.error-assistant-did-not-receive-customer-audio';
+
+      return isSuccessful && !hasErrorReason;
+    })
     .map((c) => c.summary)
     .filter(Boolean)
     .join('\n');
@@ -102,7 +116,7 @@ export function CallFeedbacks({ calls }: CallFeedbacksProps) {
       <Insight
         open={insightOpen}
         onOpenChange={setInsightOpen}
-        summary={allSummaries}
+        summary={successfulCallSummaries}
       />
       <div className="">
         {(() => {
