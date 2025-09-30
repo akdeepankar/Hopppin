@@ -36,18 +36,23 @@ const VapiWidget: React.FC<VapiWidgetProps> = ({
     });
     vapiInstance.on('speech-start', () => setIsSpeaking(true));
     vapiInstance.on('speech-end', () => setIsSpeaking(false));
-    vapiInstance.on('message', (message) => {
+
+    // Handler reference for cleanup
+    const handleMessage = (message: any) => {
       if (message.type === 'transcript') {
         setTranscript((prev) => [
           ...prev,
           { role: message.role, text: message.transcript },
         ]);
       }
-    });
+    };
+    vapiInstance.on('message', handleMessage);
+
     vapiInstance.on('error', (error) => {
       console.error('Vapi error:', error);
     });
     return () => {
+      vapiInstance.off && vapiInstance.off('message', handleMessage);
       vapiInstance?.stop();
     };
   }, [apiKey]);
