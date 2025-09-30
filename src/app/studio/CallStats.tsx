@@ -141,15 +141,31 @@ export function CallStats({
             barGap={8}
           >
             <CartesianGrid vertical={false} />
-            <XAxis type="number" tickLine={false} axisLine={false} stroke="#fff" />
-            <YAxis type="category" dataKey="name" tickLine={false} axisLine={false} stroke="#fff" />
+            <XAxis
+              type="number"
+              tickLine={false}
+              axisLine={false}
+              stroke="#fff"
+            />
+            <YAxis
+              type="category"
+              dataKey="name"
+              tickLine={false}
+              axisLine={false}
+              stroke="#fff"
+            />
             <Tooltip />
             <Legend />
             <Bar
               dataKey="value"
               fill="#87cefa" // light sky blue
               radius={6}
-              label={{ position: 'right', fill: '#87cefa', fontWeight: 'bold', fontSize: 14 }}
+              label={{
+                position: 'right',
+                fill: '#87cefa',
+                fontWeight: 'bold',
+                fontSize: 14,
+              }}
             />
           </BarChart>
         </div>
