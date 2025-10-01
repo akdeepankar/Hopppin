@@ -129,18 +129,21 @@ export function Insight(props: InsightProps) {
             ],
             conversationId: 'chat-1234',
           });
-          const chatResp = await fetch('http://localhost:3003/api/chat', {
-            method: 'POST',
-            headers: {
-              Authorization:
-                'Bearer sk_EejD9WUWC0-a.eYQzwD1xqGC4JiRH06wQ2BcaLvVS88jCT77k4-ulKI0',
-              'Content-Type': 'application/json',
-            },
-            body,
-            signal: controllerRef.current
-              ? controllerRef.current.signal
-              : undefined,
-          });
+          const chatResp = await fetch(
+            process.env.NEXT_PUBLIC_INKEEP_GRAPH_URL ||
+              'http://localhost:3003/api/chat',
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_INKEEP_API_KEY || ''}`,
+                'Content-Type': 'application/json',
+              },
+              body,
+              signal: controllerRef.current
+                ? controllerRef.current.signal
+                : undefined,
+            }
+          );
 
           const chatStatus = chatResp.status;
           if (!chatResp.ok) {
