@@ -345,10 +345,10 @@ export default function CreateAssistantModal({
             {(() => {
               const embeddedChatProps: InkeepEmbeddedChatProps = {
                 aiChatSettings: {
-                  graphUrl: 'http://localhost:3003/api/chat',
-                  apiKey:
-                    process.env['REACT_APP_INKEEP_API_KEY'] ||
-                    'sk_EejD9WUWC0-a.eYQzwD1xqGC4JiRH06wQ2BcaLvVS88jCT77k4-ulKI0', // Your API key
+                  graphUrl:
+                    process.env.NEXT_PUBLIC_INKEEP_GRAPH_URL ||
+                    'https://inkeep-agents-run-api.vercel.app/api/chat',
+                  apiKey: process.env.NEXT_PUBLIC_INKEEP_API_KEY || '',
                 },
               };
               return <InkeepEmbeddedChat {...embeddedChatProps} />;

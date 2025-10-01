@@ -5,8 +5,10 @@ import {
 
 const buttonProps: InkeepChatButtonProps = {
   aiChatSettings: {
-    graphUrl: 'http://localhost:3003/api/chat',
-    apiKey: 'sk_GT34zW85KGFt.rmsVE21gE1WJrq7VRbPzsW3eHz00FNvb1qciCK_mqKE', // Your API key
+    graphUrl:
+      process.env.NEXT_PUBLIC_INKEEP_GRAPH_URL ||
+      'https://inkeep-agents-run-api.vercel.app/api/chat',
+    apiKey: process.env.NEXT_PUBLIC_INKEEP_API_KEY || '',
   },
 };
 
