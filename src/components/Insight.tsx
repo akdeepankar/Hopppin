@@ -131,7 +131,7 @@ export function Insight(props: InsightProps) {
           });
           const chatResp = await fetch(
             process.env.NEXT_PUBLIC_INKEEP_GRAPH_URL ||
-              'http://localhost:3003/api/chat',
+              'https://inkeep-agents-run-api.vercel.app/api/chat',
             {
               method: 'POST',
               headers: {
